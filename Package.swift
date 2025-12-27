@@ -2,7 +2,7 @@
 import PackageDescription
 
 let package = Package(
-    name: "MacCleaner",
+    name: "tidy-up",
     platforms: [
         .macOS(.v14)
     ],
@@ -11,10 +11,11 @@ let package = Package(
     ],
     targets: [
         .executableTarget(
-            name: "MacCleaner",
+            name: "tidy-up",
             dependencies: [
                 .product(name: "ArgumentParser", package: "swift-argument-parser"),
-            ]
+            ],
+            path: "Sources"
         ),
     ]
 )

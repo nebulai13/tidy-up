@@ -68,9 +68,8 @@ actor Journal {
         let sessionFileName = "session_\(UUID().uuidString).json"
         self.currentSessionFile = journalDirectory.appendingPathComponent(sessionFileName)
         self.currentSession = JournalSession()
-        
-        // Save initial session
-        try? save()
+
+        // Note: Initial session will be saved on first operation
     }
     
     func addOperation(_ operation: FileOperation) async {
@@ -94,18 +93,20 @@ actor Journal {
         await Logger.shared.log("Session completed", level: .success)
     }
     
-    func loadIncompleteOperation() throws -> JournalSession? {
+    nonisolated func loadIncompleteOperation() throws -> JournalSession? {
         let files = try FileManager.default.contentsOfDirectory(at: journalDirectory, includingPropertiesForKeys: nil)
-        
+
         for file in files where file.pathExtension == "json" {
             let data = try Data(contentsOf: file)
-            let session = try JSONDecoder().decode(JournalSession.self, from: data)
-            
+            let decoder = JSONDecoder()
+            decoder.dateDecodingStrategy = .iso8601
+            let session = try decoder.decode(JournalSession.self, from: data)
+
             if !session.isComplete {
                 return session
             }
         }
-        
+
         return nil
     }
     

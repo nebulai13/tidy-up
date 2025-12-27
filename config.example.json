@@ -1,6 +1,6 @@
 {
-  "autoArchiveOldFiles": false,
-  "archiveOlderThanDays": 365,
+  "storagePath": "/Volumes/storage1/",
+  "fastStoragePath": "/Volumes/flash1/",
   "defaultThreshold": 100,
   "excludePaths": [
     "/System",
@@ -10,6 +10,55 @@
     "/private/var/vm",
     "/Applications"
   ],
-  "fastStoragePath": "/Volumes/flash1/",
-  "storagePath": "/Volumes/storage1/"
+  "autoArchiveOldFiles": false,
+  "archiveOlderThanDays": 365
 }
+/*
+ * MacCleaner Configuration File
+ * 
+ * This file is loaded from:
+ * ~/Library/Application Support/MacCleaner/config.json
+ * 
+ * Configuration Options:
+ * 
+ * storagePath (string)
+ *   Path to your archive/storage drive (usually HDD)
+ *   Files moved here are organized by date: YYYY/MM/
+ *   Example: "/Volumes/storage1/" or "/Volumes/MyBackup/"
+ * 
+ * fastStoragePath (string)
+ *   Path to your fast storage drive (usually NVMe SSD)
+ *   For frequently accessed files you want kept on fast storage
+ *   Example: "/Volumes/flash1/" or "/Volumes/MySSD/"
+ * 
+ * defaultThreshold (integer)
+ *   Default minimum file size in MB to report during scans
+ *   Can be overridden with --threshold flag
+ *   Recommended: 100-500 depending on your storage situation
+ * 
+ * excludePaths (array of strings)
+ *   Paths to skip during scanning
+ *   System paths are excluded by default for safety
+ *   Add your own paths to skip (e.g., Photos library)
+ *   Examples:
+ *     - "~/Library/Photos" - Skip Photos library
+ *     - "~/Library/Developer" - Skip Xcode data
+ *     - "/Volumes/TimeMachine" - Skip backup drive
+ * 
+ * autoArchiveOldFiles (boolean)
+ *   Future feature: Automatically archive files older than threshold
+ *   Currently not implemented, set to false
+ * 
+ * archiveOlderThanDays (integer)
+ *   When autoArchiveOldFiles is true, files older than this will auto-archive
+ *   Currently not used
+ * 
+ * To edit this file:
+ *   1. Via CLI: maccleaner config --storage-path "/new/path/"
+ *   2. Directly: open ~/Library/Application\ Support/MacCleaner/config.json
+ *   3. Reset: maccleaner config --reset
+ * 
+ * After editing, verify:
+ *   maccleaner config --show
+ */
+

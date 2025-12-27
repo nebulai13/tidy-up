@@ -49,11 +49,11 @@ extension TidyUp {
             await logger.log("Starting scan of \(scanPath)", level: .info)
             
             let results = try await scanner.scan(path: scanPath)
-            
+
             await logger.log("Scan complete. Found \(results.largeFiles.count) large files", level: .info)
-            
+
             // Display results
-            ResultsDisplay.show(results)
+            await ResultsDisplay.show(results)
         }
     }
     

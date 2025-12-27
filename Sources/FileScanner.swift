@@ -10,6 +10,28 @@ struct FileInfo: Identifiable {
     var sizeFormatted: String {
         ByteCountFormatter.string(fromByteCount: size, countStyle: .file)
     }
+    
+    var smartSuggestion: String {
+        let category = Utilities.categorizeFile(self)
+        let age = Calendar.current.dateComponents([.day], from: lastModified, to: Date()).day ?? 0
+        
+        var suggestions: [String] = []
+        
+        // Age-based suggestions
+        if age > 365 {
+            suggestions.append("Old file (>1 year)")
+        }
+        
+        // Size-based suggestions
+        if size > 5_000_000_000 { // 5GB
+            suggestions.append("Very large")
+        }
+        
+        // Category-based
+        suggestions.append(category.recommendedDestination)
+        
+        return suggestions.joined(separator: " • ")
+    }
 }
 
 struct ScanResults {
@@ -77,25 +99,27 @@ actor FileScanner {
         ) else {
             return
         }
-        
-        for case let fileURL as URL in enumerator {
+
+        while let object = enumerator.nextObject() {
+            guard let fileURL = object as? URL else { continue }
+
             // Skip excluded paths
             if excludedPaths.contains(where: { fileURL.path.hasPrefix($0) }) {
                 enumerator.skipDescendants()
                 continue
             }
-            
+
             do {
                 let resourceValues = try fileURL.resourceValues(forKeys: resourceKeys)
-                
+
                 guard let isDirectory = resourceValues.isDirectory else { continue }
-                
+
                 if !isDirectory {
                     guard let size = resourceValues.fileSize,
                           let modified = resourceValues.contentModificationDate else {
                         continue
                     }
-                    
+
                     if Int64(size) >= threshold {
                         let fileInfo = FileInfo(
                             path: fileURL.path,
@@ -104,7 +128,7 @@ actor FileScanner {
                             isDirectory: false
                         )
                         results.add(fileInfo)
-                        
+
                         // Log every 10 large files found
                         if results.largeFiles.count % 10 == 0 {
                             await Logger.shared.log("Found \(results.largeFiles.count) large files so far...", level: .debug)
@@ -121,7 +145,7 @@ actor FileScanner {
                             isDirectory: true
                         )
                         results.add(fileInfo)
-                        
+
                         // Skip descendants since we've already counted the directory
                         enumerator.skipDescendants()
                     }
