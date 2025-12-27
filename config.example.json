@@ -1,0 +1,15 @@
+{
+  "autoArchiveOldFiles": false,
+  "archiveOlderThanDays": 365,
+  "defaultThreshold": 100,
+  "excludePaths": [
+    "/System",
+    "/Library/System",
+    "/usr",
+    "/private/var/db",
+    "/private/var/vm",
+    "/Applications"
+  ],
+  "fastStoragePath": "/Volumes/flash1/",
+  "storagePath": "/Volumes/storage1/"
+}
